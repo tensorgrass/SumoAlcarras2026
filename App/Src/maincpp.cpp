@@ -36,6 +36,7 @@
 #include <message_types.hpp>
 #include <TofVL53L4CD2.hpp>
 #include <GyroBMI160.hpp>
+#include <Servo.hpp>
 
 ControllerBase controller;
 TestBase *current_test = nullptr;
@@ -88,7 +89,10 @@ extern "C" void main_fura_mode(TIM_HandleTypeDef *htim2,
 
   FlashMemory flash_memory;
 
-  controller.init_furafoscan(&adc,
+  Servo servo_left(htim3, TIM_CHANNEL_3);      // Servo (PA0)
+  Servo servo_right(htim3, TIM_CHANNEL_1);     // Servo (PB6)
+
+  controller.init_sumoalcarras(&adc,
 							 &tracker_left,
 							 &tracker_right,
 							 &distance_tof_left,
@@ -98,7 +102,9 @@ extern "C" void main_fura_mode(TIM_HandleTypeDef *htim2,
 							 &motor_pwm_left, &motor_pwm_right,
 							 &button_start, &ir_receiver, &led_start,
 							 &sensor_gyro,
-							 &flash_memory);
+							 &flash_memory,
+							 &servo_left,
+							 &servo_right);
   while (1) {
     fura_run.main();
   }
