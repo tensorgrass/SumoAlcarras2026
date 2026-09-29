@@ -1,15 +1,72 @@
-Debug/
+# ==========================================
+# Compilación y Binarios de salida (ARM-GCC / Makefile / CMake)
+# ==========================================
+/Debug/
+/Release/
+/build/
+/bin/
+/obj/
 
-# ---> VisualStudioCode
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-!.vscode/*.code-snippets
+*.elf
+*.bin
+*.hex
+*.map
+*.o
+*.obj
+*.su
+*.d
+*.a
+*.lib
 
-# Local History for Visual Studio Code
-.history/
+# ==========================================
+# Archivos temporales e indexación de STM32CubeIDE / Eclipse
+# ==========================================
+.settings/
+.launch
+.metadata/
+*.launch
+*.log
 
-# Built Visual Studio Code Extensions
-*.vsix
+# Si trabajas en equipo, suele ignorarse la configuración del proyecto de Eclipse:
+# (Descomenta si cada desarrollador usa sus propios paths locales)
+# .project
+# .cproject
+
+# ==========================================
+# Keil uVision (MDK-ARM)
+# ==========================================
+*.uvopt
+*.uvoptx
+*.uvgui
+*.uvgui.*
+*.dep
+*.htm
+*.build_log.htm
+*.lnp
+*.sct
+
+# ==========================================
+# IAR Embedded Workbench
+# ==========================================
+*.dep
+*.ewt
+*.ewd
+*.browse
+*.pbi
+*.pbd
+*.dnx
+settings/
+
+# ==========================================
+# STM32CubeMX
+# ==========================================
+# Archivos de respaldo que genera CubeMX al regenerar código
+*.bak
+
+# ==========================================
+# Sistema Operativo y Editores
+# ==========================================
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

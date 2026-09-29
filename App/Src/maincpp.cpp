@@ -13,7 +13,7 @@
 //#include <FuraA.hpp>
 //#include <FuraB.hpp>
 //#include <FuraC.hpp>
-//#include <FuraD.hpp>
+#include <FuraD.hpp>
 #include <FuraE.hpp>
 #include <IRReceiver.hpp>
 #include <LedBase.hpp>
@@ -40,7 +40,7 @@
 
 ControllerBase controller;
 TestBase *current_test = nullptr;
-FuraE fura_run(&controller);
+FuraD fura_run(&controller);
 
 // Variable para contar los mensajes enviados/recibidos
 volatile int message_counter = 0;
@@ -56,19 +56,19 @@ extern "C" void main_fura_mode(TIM_HandleTypeDef *htim2,
   bool tracker_reverse = false;
   TrackerBase tracker_left(&adc, 0, tracker_reverse);  // PA1
   bool led_reverse = false;
-  //LedBase led_tracker_left(GPIOA, GPIO_PIN_15, led_reverse);
+  LedBase led_tracker_left(GPIOA, GPIO_PIN_8, led_reverse); //PA8
   TrackerBase tracker_right(&adc, 1, tracker_reverse);  // PA2
-  //LedBase led_tracker_right(GPIOB, GPIO_PIN_3, led_reverse);
+  LedBase led_tracker_right(GPIOB, GPIO_PIN_0, led_reverse); //PB0
   TofVL53L4CD2 distance_tof_left(GPIOB, GPIO_PIN_4);  // PB4
-  //LedBase led_distance_left(GPIOA, GPIO_PIN_12, led_reverse);
+  LedBase led_distance_left(GPIOB, GPIO_PIN_14, led_reverse); //PB14
   TofVL53L4CD2 distance_tof_right(GPIOA, GPIO_PIN_15);  // PA15
-  //LedBase led_distance_right(GPIOB, GPIO_PIN_4, led_reverse);
+  LedBase led_distance_right(GPIOB, GPIO_PIN_1, led_reverse); //PB1
   //TrackerBase distance_lateral_left(&adc, 4);  // PA4
   //LedBase led_distance_lateral_left(GPIOA, GPIO_PIN_11, led_reverse);
   //TrackerBase distance_lateral_right(&adc, 5);  // PA6
-  //LedBase led_distance_lateral_right(GPIOB, GPIO_PIN_5, led_reverse);
+  //LedBase led_distance_lateral_right(GPIOB, GPIO_PIN_1, led_reverse);
   TofVL53L4CD2 distance_tof_center(GPIOB, GPIO_PIN_3);  // PA6
-  //LedBase led_distance_center(GPIOA, GPIO_PIN_8, led_reverse);
+  LedBase led_distance_center(GPIOB, GPIO_PIN_2, led_reverse);//PB2
 
   distance_tof_left.init(TOF_ADDR_LEFT);
   distance_tof_right.init(TOF_ADDR_RIGHT);
@@ -76,9 +76,6 @@ extern "C" void main_fura_mode(TIM_HandleTypeDef *htim2,
 
   MotorOneShot125 motor_oneshot125_left(htim4, TIM_CHANNEL_2, &(htim4->Instance->CCR2));
   MotorOneShot125 motor_oneshot125_right(htim4, TIM_CHANNEL_1, &(htim4->Instance->CCR1));
-
-  MotorPWM motor_pwm_left(htim3, TIM_CHANNEL_2, &(htim3->Instance->CCR2));
-  MotorPWM motor_pwm_right(htim3, TIM_CHANNEL_1, &(htim3->Instance->CCR1));
 
   bool reverse = true;
   ButtonPullup button_start(GPIOB, GPIO_PIN_13, reverse);
@@ -89,17 +86,21 @@ extern "C" void main_fura_mode(TIM_HandleTypeDef *htim2,
 
   FlashMemory flash_memory;
 
-  Servo servo_left(htim3, TIM_CHANNEL_3);      // Servo (PA0)
-  Servo servo_right(htim3, TIM_CHANNEL_1);     // Servo (PB6)
+  Servo servo_left(htim3, TIM_CHANNEL_1);      // Servo (PA6)
+  Servo servo_right(htim3, TIM_CHANNEL_2);     // Servo (PA7)
 
   controller.init_sumoalcarras(&adc,
 							 &tracker_left,
 							 &tracker_right,
+               &led_tracker_left,
+							 &led_tracker_right,
 							 &distance_tof_left,
 							 &distance_tof_right,
 							 &distance_tof_center,
+							 &led_distance_left,
+							 &led_distance_right,
+							 &led_distance_center,
 							 &motor_oneshot125_left, &motor_oneshot125_right,
-							 &motor_pwm_left, &motor_pwm_right,
 							 &button_start, &ir_receiver, &led_start,
 							 &sensor_gyro,
 							 &flash_memory,

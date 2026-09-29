@@ -17,19 +17,22 @@ FuraE::FuraE(ControllerBase* controllerBaseValue) : controller(controllerBaseVal
     fura_type = rx_data[6];
   }
 
-  fura_type = enum_type_fura::T_FURAFOSCAN1;
-//  fura_type = enum_type_fura::T_FURAFOSCAN2;
+//  fura_type = enum_type_fura::T_FURAFOSCAN1;
+  fura_type = enum_type_fura::T_SUMOALCARRAS1;
 
   switch ((enum_type_fura)fura_type) {
     case enum_type_fura::T_FURAFOSCAN1:
       config_motor = &Configs::Furafoscan1;
       break;
-    case enum_type_fura::T_FURAFOSCAN2:
-      config_motor = &Configs::Furafoscan2;
+    case enum_type_fura::T_SUMOALCARRAS1:
+      config_motor = &Configs::SumoAlcarras1;
       break;
     case enum_type_fura::T_FURAXICLE:
       break;
   }
+
+  controller->getServoLeft()->setPosition(0);
+  controller->getServoRight()->setPosition(112);
 
 }
 
@@ -780,9 +783,9 @@ void FuraE::detectButtonStop() {
             controller->getMotorOneshot125Left()->disable();
             controller->getMotorOneshot125Right()->disable();
             break;
-          case enum_type_fura::T_FURAFOSCAN2:
-            controller->getMotorPWMLeft()->disable();
-            controller->getMotorPWMRight()->disable();
+          case enum_type_fura::T_SUMOALCARRAS1:
+            controller->getMotorOneshot125Left()->disable();
+            controller->getMotorOneshot125Right()->disable();
             break;
           case enum_type_fura::T_FURAXICLE:
             controller->getMotorOneshot125Left()->disable();
@@ -809,9 +812,9 @@ void FuraE::detectButtonStop() {
           controller->getMotorOneshot125Left()->disable();
           controller->getMotorOneshot125Right()->disable();
           break;
-        case enum_type_fura::T_FURAFOSCAN2:
-          controller->getMotorPWMLeft()->disable();
-          controller->getMotorPWMRight()->disable();
+        case enum_type_fura::T_SUMOALCARRAS1:
+          controller->getMotorOneshot125Left()->disable();
+          controller->getMotorOneshot125Right()->disable();
           break;
         case enum_type_fura::T_FURAXICLE:
           controller->getMotorOneshot125Left()->disable();
@@ -1321,9 +1324,9 @@ void FuraE::setMotorSpeed(uint32_t speed_left_value, uint32_t speed_right_value)
       controller->getMotorOneshot125Left()->setSpeed(speed_left_value);
       controller->getMotorOneshot125Right()->setSpeed(speed_right_value);
       break;
-    case enum_type_fura::T_FURAFOSCAN2:
-      controller->getMotorPWMLeft()->setSpeed(speed_left_value);
-      controller->getMotorPWMRight()->setSpeed(speed_right_value);
+    case enum_type_fura::T_SUMOALCARRAS1:
+      controller->getMotorOneshot125Left()->setSpeed(speed_left_value);
+      controller->getMotorOneshot125Right()->setSpeed(speed_right_value);
       break;
     case enum_type_fura::T_FURAXICLE:
       controller->getMotorOneshot125Left()->setSpeed(speed_left_value);
@@ -1366,9 +1369,9 @@ void FuraE::setMotorSpeedRamp(uint32_t speed_left_ini_value, uint32_t speed_left
       controller->getMotorOneshot125Left()->setSpeed(speed_left_ini);
       controller->getMotorOneshot125Right()->setSpeed(speed_right_ini);
       break;
-    case enum_type_fura::T_FURAFOSCAN2:
-      controller->getMotorPWMLeft()->setSpeed(speed_left_ini);
-      controller->getMotorPWMRight()->setSpeed(speed_right_ini);
+    case enum_type_fura::T_SUMOALCARRAS1:
+      controller->getMotorOneshot125Left()->setSpeed(speed_left_ini);
+      controller->getMotorOneshot125Right()->setSpeed(speed_right_ini);
       break;
     case enum_type_fura::T_FURAXICLE:
       controller->getMotorOneshot125Left()->setSpeed(speed_left_ini);
@@ -1397,8 +1400,8 @@ void FuraE::rampMotorSpeed(uint32_t speed_ramp_time_increment_ms, uint32_t speed
             case enum_type_fura::T_FURAFOSCAN1:
               controller->getMotorOneshot125Left()->setSpeed(speed_left_ini);
               break;
-            case enum_type_fura::T_FURAFOSCAN2:
-              controller->getMotorPWMLeft()->setSpeed(speed_left_ini);
+            case enum_type_fura::T_SUMOALCARRAS1:
+              controller->getMotorOneshot125Left()->setSpeed(speed_left_ini);
               break;
             case enum_type_fura::T_FURAXICLE:
               controller->getMotorOneshot125Left()->setSpeed(speed_left_ini);
@@ -1414,8 +1417,8 @@ void FuraE::rampMotorSpeed(uint32_t speed_ramp_time_increment_ms, uint32_t speed
             case enum_type_fura::T_FURAFOSCAN1:
               controller->getMotorOneshot125Right()->setSpeed(speed_right_ini);
               break;
-            case enum_type_fura::T_FURAFOSCAN2:
-              controller->getMotorPWMRight()->setSpeed(speed_right_ini);
+            case enum_type_fura::T_SUMOALCARRAS1:
+              controller->getMotorOneshot125Right()->setSpeed(speed_right_ini);
               break;
             case enum_type_fura::T_FURAXICLE:
               controller->getMotorOneshot125Right()->setSpeed(speed_right_ini);
@@ -1441,9 +1444,9 @@ void FuraE::rampMotorSpeed(uint32_t speed_ramp_time_increment_ms, uint32_t speed
             controller->getMotorOneshot125Left()->setSpeed(speed_left_ini);
             controller->getMotorOneshot125Right()->setSpeed(speed_right_ini);
             break;
-          case enum_type_fura::T_FURAFOSCAN2:
-            controller->getMotorPWMLeft()->setSpeed(speed_left_ini);
-            controller->getMotorPWMRight()->setSpeed(speed_right_ini);
+          case enum_type_fura::T_SUMOALCARRAS1:
+            controller->getMotorOneshot125Left()->setSpeed(speed_left_ini);
+            controller->getMotorOneshot125Right()->setSpeed(speed_right_ini);
             break;
           case enum_type_fura::T_FURAXICLE:
             controller->getMotorOneshot125Left()->setSpeed(speed_left_ini);

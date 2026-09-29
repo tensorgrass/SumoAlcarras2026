@@ -376,7 +376,7 @@ static void MX_TIM3_Init(void)
   htim3.Instance = TIM3;
   htim3.Init.Prescaler = 100-1;
   htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim3.Init.Period = 8000-1;
+  htim3.Init.Period = 20000-1;
   htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
   if (HAL_TIM_PWM_Init(&htim3) != HAL_OK)
@@ -390,7 +390,7 @@ static void MX_TIM3_Init(void)
     Error_Handler();
   }
   sConfigOC.OCMode = TIM_OCMODE_PWM1;
-  sConfigOC.Pulse = 0;
+  sConfigOC.Pulse = 1500;
   sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
   sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
   if (HAL_TIM_PWM_ConfigChannel(&htim3, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
@@ -596,10 +596,11 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(TOF_RIGHT_GPIO_Port, TOF_RIGHT_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, Led_tracker_right_GPIO_Output_Pin|Led_distance_right_GPIO_Output_Pin|Led_distance_center_GPIO_Output_Pin|Led_tracker_ledft_GPIO_Output_Pin
+                          |TOF_CENTER_Pin|TOF_LEFT_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, TOF_CENTER_Pin|TOF_LEFT_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, Led_distance_left_GPIO_Output_Pin|TOF_RIGHT_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : PC13 */
   GPIO_InitStruct.Pin = GPIO_PIN_13;
@@ -608,25 +609,27 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
+  /*Configure GPIO pins : Led_tracker_right_GPIO_Output_Pin Led_distance_right_GPIO_Output_Pin Led_distance_center_GPIO_Output_Pin Led_tracker_ledft_GPIO_Output_Pin
+                           TOF_CENTER_Pin TOF_LEFT_Pin */
+  GPIO_InitStruct.Pin = Led_tracker_right_GPIO_Output_Pin|Led_distance_right_GPIO_Output_Pin|Led_distance_center_GPIO_Output_Pin|Led_tracker_ledft_GPIO_Output_Pin
+                          |TOF_CENTER_Pin|TOF_LEFT_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
   /*Configure GPIO pin : PB13 */
   GPIO_InitStruct.Pin = GPIO_PIN_13;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : TOF_RIGHT_Pin */
-  GPIO_InitStruct.Pin = TOF_RIGHT_Pin;
+  /*Configure GPIO pins : Led_distance_left_GPIO_Output_Pin TOF_RIGHT_Pin */
+  GPIO_InitStruct.Pin = Led_distance_left_GPIO_Output_Pin|TOF_RIGHT_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(TOF_RIGHT_GPIO_Port, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : TOF_CENTER_Pin TOF_LEFT_Pin */
-  GPIO_InitStruct.Pin = TOF_CENTER_Pin|TOF_LEFT_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /* EXTI interrupt init*/
   HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
