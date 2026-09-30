@@ -31,9 +31,6 @@ FuraE::FuraE(ControllerBase* controllerBaseValue) : controller(controllerBaseVal
       break;
   }
 
-  controller->getServoLeft()->setPosition(0);
-  controller->getServoRight()->setPosition(112);
-
 }
 
 // prueba boton 5 segundos para arrancar y arrancar el motor
@@ -86,8 +83,8 @@ void FuraE::main() {
             controller->getLedStart()->turn_on();
             button_stop__button_previous_state = 0;
             setDirectionLeft();
-            step_after_button = enum_step_fura::STEP_MOTOR_START;
-//            step_after_button = enum_step_fura::STEP_DEFENSE_LEFT;
+//            step_after_button = enum_step_fura::STEP_MOTOR_START;
+            step_after_button = enum_step_fura::STEP_DEFENSE_LEFT;
             goNextStep(enum_step_fura::STEP_WAIT_REMOTE_SUMO);
             break;
 
@@ -95,8 +92,8 @@ void FuraE::main() {
             controller->getLedStart()->turn_on();
             button_stop__button_previous_state = 0;
             setDirectionRight();
-            step_after_button = enum_step_fura::STEP_MOTOR_START;
-//            step_after_button = enum_step_fura::STEP_DEFENSE_RIGHT;
+//            step_after_button = enum_step_fura::STEP_MOTOR_START;
+            step_after_button = enum_step_fura::STEP_DEFENSE_RIGHT;
             goNextStep(enum_step_fura::STEP_WAIT_REMOTE_SUMO);
             break;
 
@@ -278,6 +275,9 @@ void FuraE::main() {
         distance_left_in__time_tick_ini = 0;
         distance_right_in__time_tick_ini = 0;
         distance_center_in__time_tick_ini = 0;
+
+        controller->getServoLeft()->setPosition(F_E_SERVO_FLAG_MAX_LEFT);
+        controller->getServoRight()->setPosition(F_E_SERVO_FLAG_MAX_RIGHT);
       }
 
       if ((HAL_GetTick() / 100) % 2 == 0) {
@@ -310,7 +310,11 @@ void FuraE::main() {
         previous_step = current_step;
         current_step_init = false;
 
+        setServoFlagUpLeft();
+        setServoFlagUpRight();
+
         setMotorSpeed((*config_motor)[(size_t)enum_motor::F_M_ESC_MID_STOP].value, (*config_motor)[(size_t)enum_motor::F_M_ESC_MID_STOP].value);
+
       }
       if (controller->getIRReceiver()->isDataReady()) {
         IRReceiver::ValueRC5Sumo value = controller->getIRReceiver()->getValueRC5Sumo();
@@ -319,6 +323,26 @@ void FuraE::main() {
         switch (command) {
           case F_E_IR_RC5SUMO_COMMAND_START_STOP: //start / stop
             if (address == rc_address+1) { //start
+              switch (step_after_button){
+                case enum_step_fura::STEP_MOTOR_START:
+                  setMotorSpeed((*config_motor)[(size_t)enum_motor::F_M_ESC_BASE_SPEED_LEFT].value, (*config_motor)[(size_t)enum_motor::F_M_ESC_BASE_SPEED_RIGHT].value);
+                  break;
+                case enum_step_fura::STEP_DEFENSE_LEFT:
+                  setMotorSpeed((*config_motor)[(size_t)enum_motor::F_M_DEFENSE_BACK_SLOW].value, (*config_motor)[(size_t)enum_motor::F_M_DEFENSE_BACK_FAST].value);
+                  break;
+                case enum_step_fura::STEP_DEFENSE_RIGHT:
+                  setMotorSpeed((*config_motor)[(size_t)enum_motor::F_M_DEFENSE_BACK_FAST].value, (*config_motor)[(size_t)enum_motor::F_M_DEFENSE_BACK_SLOW].value);
+                  break;
+                case enum_step_fura::STEP_DEFENSE_SPIN:
+                  setMotorSpeed((*config_motor)[(size_t)enum_motor::F_M_DEFENSE_SPIN_FRONT].value, (*config_motor)[(size_t)enum_motor::F_M_DEFENSE_SPIN_BACK].value);
+                  break;
+                default:
+                  setMotorSpeed((*config_motor)[(size_t)enum_motor::F_M_ESC_BASE_SPEED_LEFT].value, (*config_motor)[(size_t)enum_motor::F_M_ESC_BASE_SPEED_RIGHT].value);
+              }
+
+
+              setServoFlagDownLeft();
+              setServoFlagDownRight();
               controller->getLedStart()->turn_on();
               button_stop__button_previous_state = 0;
               goNextStep(step_after_button);
@@ -486,7 +510,8 @@ void FuraE::main() {
       if (current_step_init) {
         previous_step = current_step;
         current_step_init = false;
-        setMotorSpeedRamp((*config_motor)[(size_t)enum_motor::F_M_ESC_BASE_SPEED_RAMP_INI].value, esc_speed_base_left, (*config_motor)[(size_t)enum_motor::F_M_ESC_BASE_SPEED_RAMP_INI].value, esc_speed_base_right);
+// FCA TEST SPEED       setMotorSpeedRamp((*config_motor)[(size_t)enum_motor::F_M_ESC_BASE_SPEED_RAMP_INI].value, esc_speed_base_left, (*config_motor)[(size_t)enum_motor::F_M_ESC_BASE_SPEED_RAMP_INI].value, esc_speed_base_right);
+        setMotorSpeed((*config_motor)[(size_t)enum_motor::F_M_ESC_BASE_SPEED_LEFT].value, (*config_motor)[(size_t)enum_motor::F_M_ESC_BASE_SPEED_RIGHT].value); // FCA TEST SPEED
         sensor_gyro_in__time_tick_ini = 0;
         tracker_left_in__time_tick_ini = 0;
         tracker_right_in__time_tick_ini = 0;
@@ -942,7 +967,12 @@ void FuraE::detectTrakerLeftIn(enum_step_fura next_step) {
     #endif
     if (tracker_left_in__time_tick_ini == 0) {
       // empezamos a contar el tiempo que el tracker izquierdo esta activo
-      tracker_left_in__time_tick_ini = HAL_GetTick();
+//      tracker_left_in__time_tick_ini = HAL_GetTick();
+      //FCA Prueba
+      tracker_left_in__time_tick_ini = 0;
+      goNextStep(next_step);
+      return;
+
     } else {
       // esperamos a que termine 1ms para saber que el tracker se ha detectado
       // correctamente
@@ -1023,7 +1053,12 @@ void FuraE::detectTrakerRightIn(enum_step_fura next_step) {
     #endif
     if (tracker_right_in__time_tick_ini == 0) {
       // empezamos a contar el tiempo que el tracker izquierdo esta activo
-      tracker_right_in__time_tick_ini = HAL_GetTick();
+//      tracker_right_in__time_tick_ini = HAL_GetTick();
+      //FCA Prueba
+      tracker_right_in__time_tick_ini = 0;
+      goNextStep(next_step);
+      return;
+
     } else {
       // esperamos a que termine 1ms para saber que el tracker se ha detectado
       // correctamente
@@ -1496,4 +1531,28 @@ void FuraE::writeDataFlash(uint32_t tracker_base_left_in_detect_line_value,
   rx_data[5] = rc_address_value;
   rx_data[6] = fura_type_value;
   controller->getFlashMemory()->write(rx_data, FLASH_DATA_NUM_VALUES);
+}
+
+void FuraE::setServoFlagUpLeft() {
+#ifdef F_E_ACTIVE_SERVO_FLAG_LEFT
+  controller->getServoLeft()->setPulse(F_E_SERVO_FLAG_PULSE_MIN_LEFT);
+#endif
+}
+
+void FuraE::setServoFlagUpRight() {
+#ifdef F_E_ACTIVE_SERVO_FLAG_RIGHT
+  controller->getServoRight()->setPulse(F_E_SERVO_FLAG_PULSE_MIN_RIGHT);
+#endif
+}
+
+void FuraE::setServoFlagDownLeft() {
+#ifdef F_E_ACTIVE_SERVO_FLAG_LEFT
+  controller->getServoLeft()->setPulse(F_E_SERVO_FLAG_PULSE_MAX_LEFT);
+#endif
+}
+
+void FuraE::setServoFlagDownRight() {
+#ifdef F_E_ACTIVE_SERVO_FLAG_LEFT
+  controller->getServoRight()->setPulse(F_E_SERVO_FLAG_PULSE_MAX_RIGHT);
+#endif
 }

@@ -16,11 +16,11 @@
 #define F_E_ACTIVE_DISTANCE_SENSOR_RIGHT
 #define F_E_ACTIVE_DISTANCE_SENSOR_CENTER
 
-//#define F_E_ACTIVE_LED_TRACKER_SENSOR_LEFT
-//#define F_E_ACTIVE_LED_TRACKER_SENSOR_RIGHT
-//#define F_E_ACTIVE_LED_DISTANCE_SENSOR_LEFT
-//#define F_E_ACTIVE_LED_DISTANCE_SENSOR_RIGHT
-//#define F_E_ACTIVE_LED_DISTANCE_SENSOR_CENTER
+#define F_E_ACTIVE_LED_TRACKER_SENSOR_LEFT
+#define F_E_ACTIVE_LED_TRACKER_SENSOR_RIGHT
+#define F_E_ACTIVE_LED_DISTANCE_SENSOR_LEFT
+#define F_E_ACTIVE_LED_DISTANCE_SENSOR_RIGHT
+#define F_E_ACTIVE_LED_DISTANCE_SENSOR_CENTER
 
 
 #define F_E_ACTIVE_FLAG_LEFT
@@ -59,6 +59,21 @@
 
 #define F_E_IR_RC5SUMO_COMMAND_PROGRAM 0xb
 #define F_E_IR_RC5SUMO_COMMAND_START_STOP 0x7
+
+#define F_E_ACTIVE_SERVO_FLAG_LEFT
+#define F_E_ACTIVE_SERVO_FLAG_RIGHT
+
+#define F_E_SERVO_FLAG_MIN_LEFT 109
+#define F_E_SERVO_FLAG_MAX_LEFT 14
+//SERVO_MIN_PULSE + ((SERVO_MAX_PULSE - SERVO_MIN_PULSE) * angle) / 180; 500 + (((2500-500) * angle) / 180)
+#define F_E_SERVO_FLAG_PULSE_MIN_LEFT 1711
+#define F_E_SERVO_FLAG_PULSE_MAX_LEFT 656
+
+#define F_E_SERVO_FLAG_MIN_RIGHT 3
+#define F_E_SERVO_FLAG_MAX_RIGHT 96
+//SERVO_MIN_PULSE + ((SERVO_MAX_PULSE - SERVO_MIN_PULSE) * angle) / 180; 500 + (((2500-500) * angle) / 180)
+#define F_E_SERVO_FLAG_PULSE_MIN_RIGHT 533
+#define F_E_SERVO_FLAG_PULSE_MAX_RIGHT 1567
 
 #include <ControllerBase.hpp>
 
@@ -197,10 +212,10 @@
       }};
 
       constexpr std::array<ConfigValue, (size_t)enum_motor::COUNT> SumoAlcarras1 = {{
-          [(size_t)enum_motor::F_M_ESC_MID_STOP] = { 1920 }, // 1830-2000
-          [(size_t)enum_motor::F_M_ESC_BASE_SPEED_RAMP_INI] = { 2100 },
-          [(size_t)enum_motor::F_M_ESC_BASE_SPEED_LEFT] = { 2300 }, //2110//TTT2200
-          [(size_t)enum_motor::F_M_ESC_BASE_SPEED_RIGHT] = { 2300 }, //2110//TTT2200
+          [(size_t)enum_motor::F_M_ESC_MID_STOP] = { 1899 }, // 1830-2000 - 1920
+          [(size_t)enum_motor::F_M_ESC_BASE_SPEED_RAMP_INI] = { 2000 },//2100
+          [(size_t)enum_motor::F_M_ESC_BASE_SPEED_LEFT] = { 2200 }, //2300
+          [(size_t)enum_motor::F_M_ESC_BASE_SPEED_RIGHT] = { 2200 }, //2300
           [(size_t)enum_motor::F_M_ESC_BASE_SLOW] = { 2300 }, //2250
           [(size_t)enum_motor::F_M_ESC_BASE_FAST] = { 2430 }, //2350
           [(size_t)enum_motor::F_M_ESC_TRAKER_SLOW_SPEED] = { 2050 },//No utilizado
@@ -219,9 +234,9 @@
           [(size_t)enum_motor::F_M_SPEED_REFRESH_MS] = { 10 },
           [(size_t)enum_motor::F_M_SPEED_RAMP_CHECK] = { 99999 },
 
-          [(size_t)enum_motor::F_M_TRACKER_OUT_OF_LINE_MS] = { 70 },
-          [(size_t)enum_motor::F_M_TRACKER_ROTATE_MS] = { 350 },
-          [(size_t)enum_motor::F_M_TRACKER_OUT_OF_LINE_BOTH_MS] = { 100 },
+          [(size_t)enum_motor::F_M_TRACKER_OUT_OF_LINE_MS] = { 80 },//70
+          [(size_t)enum_motor::F_M_TRACKER_ROTATE_MS] = { 350 },//350
+          [(size_t)enum_motor::F_M_TRACKER_OUT_OF_LINE_BOTH_MS] = { 150 },//100
           [(size_t)enum_motor::F_M_TRACKER_CHECK] = { 99999 },
 
           [(size_t)enum_motor::F_M_DEFENSE_BACK_FAST] = { 1400 },
@@ -231,7 +246,7 @@
           [(size_t)enum_motor::F_M_DEFENSE_ATTACK] = { 2450 },
           [(size_t)enum_motor::F_M_DEFENSE_LEFT_OUT_MS] = { 300 },
           [(size_t)enum_motor::F_M_DEFENSE_RIGHT_OUT_MS] = { 300 },
-          [(size_t)enum_motor::F_M_DEFENSE_SPIN_OUT_MS] = { 550 },
+          [(size_t)enum_motor::F_M_DEFENSE_SPIN_OUT_MS] = { 450 },//550
           [(size_t)enum_motor::F_M_DEFENSE_ATTACK_OUT_MS] = { 650 },
           [(size_t)enum_motor::F_M_DEFENSE_CHECK] = { 99999 },
 
@@ -242,12 +257,12 @@
           [(size_t)enum_motor::F_M_SENSOR_TILTING_CHECK] = { 99999 },
 
 
-          [(size_t)enum_motor::F_M_DISTANCE_SPEED_SLOW_LEFT] = { 2350 },
-          [(size_t)enum_motor::F_M_DISTANCE_SPEED_SLOW_RIGHT] = { 2350 },
-          [(size_t)enum_motor::F_M_DISTANCE_SPEED_LEFT] = { 2400 },
-          [(size_t)enum_motor::F_M_DISTANCE_SPEED_RIGHT] = { 2000 },
-          [(size_t)enum_motor::F_M_DISTANCE_BOTH_SPEED] = { 2350 },
-          [(size_t)enum_motor::F_M_DISTANCE_BOTH_SPEED_BOOST] = { 2350 },
+          [(size_t)enum_motor::F_M_DISTANCE_SPEED_SLOW_LEFT] = { 2050 },//2350
+          [(size_t)enum_motor::F_M_DISTANCE_SPEED_SLOW_RIGHT] = { 2050 },//2350
+          [(size_t)enum_motor::F_M_DISTANCE_SPEED_LEFT] = { 2300 },//2400
+          [(size_t)enum_motor::F_M_DISTANCE_SPEED_RIGHT] = { 2300 },//2000
+          [(size_t)enum_motor::F_M_DISTANCE_BOTH_SPEED] = { 2250 },//2350
+          [(size_t)enum_motor::F_M_DISTANCE_BOTH_SPEED_BOOST] = { 2250 },//2370
           [(size_t)enum_motor::F_M_DISTANCE_IN_MS] = { 1 },
           [(size_t)enum_motor::F_M_DISTANCE_OUT_MS] = { 20 },
           [(size_t)enum_motor::F_M_DISTANCE_BOTH_OUT_MS] = { 20 },
@@ -443,6 +458,11 @@ class FuraE {
                       uint32_t tracker_base_right_out_detect_line_value,
                       uint32_t rc_address_value,
                       uint32_t furafoscan_type_value);
+
+  void setServoFlagUpLeft();
+  void setServoFlagUpRight();
+  void setServoFlagDownLeft();
+  void setServoFlagDownRight();
 };
 
 #endif  // FURAE_HPP

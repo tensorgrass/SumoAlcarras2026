@@ -13,7 +13,7 @@
 //#include <FuraA.hpp>
 //#include <FuraB.hpp>
 //#include <FuraC.hpp>
-#include <FuraD.hpp>
+//#include <FuraD.hpp>
 #include <FuraE.hpp>
 #include <IRReceiver.hpp>
 #include <LedBase.hpp>
@@ -40,7 +40,7 @@
 
 ControllerBase controller;
 TestBase *current_test = nullptr;
-FuraD fura_run(&controller);
+FuraE fura_run(&controller);
 
 // Variable para contar los mensajes enviados/recibidos
 volatile int message_counter = 0;

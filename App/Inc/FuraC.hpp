@@ -3,7 +3,7 @@
 
 #define BUTTON_START_WAIT 3000
 
-#define ESC_MID_STOP 1920//1830-2000
+#define ESC_MID_STOP 1910//1830-2000-1920
 #define ESC_TEST_SPEED 2050
 
 #include <ControllerBase.hpp>
